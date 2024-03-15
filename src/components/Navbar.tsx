@@ -1,4 +1,4 @@
-import { useAppDispatch, useAppSelector } from "@/app/hooks";
+import { useAppDispatch } from "@/app/hooks";
 import { Button } from "@/components/ui/button";
 import { clearAuth } from "@/features/auth/authSlice";
 import { useSignoutMutation } from "@/services/user/userApiSlice";
@@ -8,7 +8,6 @@ import { Link } from '@tanstack/react-router';
 const Navbar = () => {
   const dispatch = useAppDispatch();
   const [signoutApi, { isLoading }] = useSignoutMutation();
-  const user = useAppSelector((state) => state.auth.user);
   return (
     <nav className="py-2">
       <div className="flex h-16 justify-between items-center">
@@ -18,11 +17,6 @@ const Navbar = () => {
               <h2 className="font-bold text-3xl">BidAI</h2>
             </Link>
           </div>
-        </div>
-        <div className="flex items-center gap-4">
-          {user?.account.isAdmin ? (
-            <Link to='/admins/create-account' className="text-lg">Create Account</Link>
-          ) : null}
         </div>
         <Button variant={"outline"}
           disabled={isLoading}
