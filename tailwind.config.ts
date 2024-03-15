@@ -5,7 +5,6 @@ import tailwindForms from '@tailwindcss/forms';
 import tailwindAspect from '@tailwindcss/aspect-ratio';
 import tailwindContainerQueries from '@tailwindcss/container-queries';
 
-require('tailwindcss-animate');
 const config = {
   mode: 'jit',
   darkMode: ['class'],

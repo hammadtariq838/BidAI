@@ -43,7 +43,7 @@ export const userApiSlice = createApi({
   baseQuery: baseQueryWithAuth,
   tagTypes: ['User'],
   endpoints: (builder) => ({
-    signup: builder.mutation<
+    createAccount: builder.mutation<
       UserResponse,
       CreateUserRequest
     >({
@@ -108,7 +108,7 @@ export const userApiSlice = createApi({
 });
 
 export const {
-  useSignupMutation,
+  useCreateAccountMutation,
   useSigninMutation,
   useSignoutMutation,
   useGetProfileQuery,

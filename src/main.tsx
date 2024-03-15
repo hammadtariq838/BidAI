@@ -1,55 +1,30 @@
-import React from "react";
+import { StrictMode } from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
-import {
-  Route,
-  createBrowserRouter,
-  createRoutesFromElements,
-  RouterProvider,
-} from "react-router-dom";
-import App from "./App";
-import { HelmetProvider } from "react-helmet-async";
 import { Provider } from "react-redux";
 import { persistor, store } from "./app/store";
-import PrivateRoute from "./components/PrivateRoute";
-import PublicRoute from "./components/PublicRoute";
-import HomeScreen from "./screens/HomeScreen";
-import SigninScreen from "./screens/SigninScreen";
-import SignupScreen from "./screens/SignupScreen";
 import { PersistGate } from "redux-persist/integration/react";
-import AdminRoute from "./components/AdminRoute";
 
-const router = createBrowserRouter(
-  createRoutesFromElements(
-    <Route path="/" element={<App />}>
-      {/* public routes */}
-      <Route path="" element={<PublicRoute />}>
-        <Route path="sign-in" element={<SigninScreen />} />
-      </Route>
+// Import the generated route tree
+import { routeTree } from './routeTree.gen'
+import { RouterProvider, createRouter } from "@tanstack/react-router";
 
-      {/* private routes */}
-      <Route path="" element={<PrivateRoute />}>
-        <Route index element={<HomeScreen />} />
-        <Route path="profile" element={<HomeScreen />} />
-      </Route>
+// Create a new router instance
+const router = createRouter({ routeTree })
 
-      {/* admin routes */}
-      <Route path="" element={<AdminRoute />}>
-        <Route path="admins/users" element={<SigninScreen />} />
-        <Route path="admins/users/sign-up" element={<SignupScreen />} />
-      </Route>
-    </Route>
-  ),
-);
+// Register the router instance for type safety
+declare module '@tanstack/react-router' {
+  interface Register {
+    router: typeof router
+  }
+}
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
-  <React.StrictMode>
+  <StrictMode>
     <Provider store={store}>
       <PersistGate persistor={persistor}>
-        <HelmetProvider>
-          <RouterProvider router={router} />
-        </HelmetProvider>
+        <RouterProvider router={router} />
       </PersistGate>
     </Provider>
-  </React.StrictMode>,
+  </StrictMode>,
 );
