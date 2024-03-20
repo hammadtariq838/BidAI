@@ -1,18 +1,12 @@
-import { createFileRoute } from '@tanstack/react-router'
-import Navbar from '@/components/Navbar';
-import { Card } from '@/components/ui/card';
+import Navbar from "@/components/Navbar"
+import { createFileRoute } from "@tanstack/react-router"
 
-const HomeScreen = () => {
-
+const Screen = () => {
   return (
-    <div className="flex flex-col mx-auto w-screen min-h-screen px-40">
-      <Navbar />
-      <Card className='flex grow w-full'>
-      </Card>
-    </div>
-  );
-};
+    <Navbar />
+  )
+}
 
 export const Route = createFileRoute('/_protected/')({
-  component: HomeScreen
+  component: Screen
 })

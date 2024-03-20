@@ -13,10 +13,12 @@
 import { Route as rootRoute } from './routes/__root'
 import { Route as ProtectedImport } from './routes/_protected'
 import { Route as AuthImport } from './routes/_auth'
-import { Route as AdminsRouteImport } from './routes/admins/route'
 import { Route as ProtectedIndexImport } from './routes/_protected/index'
-import { Route as AdminsCreateAccountImport } from './routes/admins/create-account'
+import { Route as ProtectedSearchByPayItemsImport } from './routes/_protected/search-by-pay-items'
+import { Route as ProtectedSearchByBidsImport } from './routes/_protected/search-by-bids'
 import { Route as ProtectedProfileImport } from './routes/_protected/profile'
+import { Route as ProtectedBidGenerationImport } from './routes/_protected/bid-generation'
+import { Route as ProtectedBidComparisonImport } from './routes/_protected/bid-comparison'
 import { Route as AuthSignInImport } from './routes/_auth/sign-in'
 
 // Create/Update Routes
@@ -31,23 +33,33 @@ const AuthRoute = AuthImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const AdminsRouteRoute = AdminsRouteImport.update({
-  path: '/admins',
-  getParentRoute: () => rootRoute,
-} as any)
-
 const ProtectedIndexRoute = ProtectedIndexImport.update({
   path: '/',
   getParentRoute: () => ProtectedRoute,
 } as any)
 
-const AdminsCreateAccountRoute = AdminsCreateAccountImport.update({
-  path: '/create-account',
-  getParentRoute: () => AdminsRouteRoute,
+const ProtectedSearchByPayItemsRoute = ProtectedSearchByPayItemsImport.update({
+  path: '/search-by-pay-items',
+  getParentRoute: () => ProtectedRoute,
+} as any)
+
+const ProtectedSearchByBidsRoute = ProtectedSearchByBidsImport.update({
+  path: '/search-by-bids',
+  getParentRoute: () => ProtectedRoute,
 } as any)
 
 const ProtectedProfileRoute = ProtectedProfileImport.update({
   path: '/profile',
+  getParentRoute: () => ProtectedRoute,
+} as any)
+
+const ProtectedBidGenerationRoute = ProtectedBidGenerationImport.update({
+  path: '/bid-generation',
+  getParentRoute: () => ProtectedRoute,
+} as any)
+
+const ProtectedBidComparisonRoute = ProtectedBidComparisonImport.update({
+  path: '/bid-comparison',
   getParentRoute: () => ProtectedRoute,
 } as any)
 
@@ -60,10 +72,6 @@ const AuthSignInRoute = AuthSignInImport.update({
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/admins': {
-      preLoaderRoute: typeof AdminsRouteImport
-      parentRoute: typeof rootRoute
-    }
     '/_auth': {
       preLoaderRoute: typeof AuthImport
       parentRoute: typeof rootRoute
@@ -76,13 +84,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthSignInImport
       parentRoute: typeof AuthImport
     }
+    '/_protected/bid-comparison': {
+      preLoaderRoute: typeof ProtectedBidComparisonImport
+      parentRoute: typeof ProtectedImport
+    }
+    '/_protected/bid-generation': {
+      preLoaderRoute: typeof ProtectedBidGenerationImport
+      parentRoute: typeof ProtectedImport
+    }
     '/_protected/profile': {
       preLoaderRoute: typeof ProtectedProfileImport
       parentRoute: typeof ProtectedImport
     }
-    '/admins/create-account': {
-      preLoaderRoute: typeof AdminsCreateAccountImport
-      parentRoute: typeof AdminsRouteImport
+    '/_protected/search-by-bids': {
+      preLoaderRoute: typeof ProtectedSearchByBidsImport
+      parentRoute: typeof ProtectedImport
+    }
+    '/_protected/search-by-pay-items': {
+      preLoaderRoute: typeof ProtectedSearchByPayItemsImport
+      parentRoute: typeof ProtectedImport
     }
     '/_protected/': {
       preLoaderRoute: typeof ProtectedIndexImport
@@ -94,9 +114,15 @@ declare module '@tanstack/react-router' {
 // Create and export the route tree
 
 export const routeTree = rootRoute.addChildren([
-  AdminsRouteRoute.addChildren([AdminsCreateAccountRoute]),
   AuthRoute.addChildren([AuthSignInRoute]),
-  ProtectedRoute.addChildren([ProtectedProfileRoute, ProtectedIndexRoute]),
+  ProtectedRoute.addChildren([
+    ProtectedBidComparisonRoute,
+    ProtectedBidGenerationRoute,
+    ProtectedProfileRoute,
+    ProtectedSearchByBidsRoute,
+    ProtectedSearchByPayItemsRoute,
+    ProtectedIndexRoute,
+  ]),
 ])
 
 /* prettier-ignore-end */

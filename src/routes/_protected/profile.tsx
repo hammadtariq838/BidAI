@@ -6,7 +6,7 @@ const HomeScreen = () => {
   const { user } = useAppSelector((state) => state.auth);
 
   return (
-    <div className="mx-auto w-screen min-h-screen px-40">
+    <div className="mx-auto w-screen min-h-screen">
       <Navbar />
       <div>
         <main>

@@ -19,6 +19,14 @@ const config = {
       },
     },
     extend: {
+      // custom
+      fontFamily: {
+        poppins: ["Poppins", "sans-serif"],
+      },
+      borderWidth: {
+        1: "1px",
+      },
+
       keyframes: {
         'accordion-down': {
           from: { height: '0' },
