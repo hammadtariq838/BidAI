@@ -12,7 +12,10 @@ import {
   TenderTypesResponse,
   BiddersResponse,
 } from '@/types/response.type';
-import { GetTendersRequest } from '@/types/request.type';
+import {
+  GetTenderByIdRequest,
+  GetTendersRequest,
+} from '@/types/request.type';
 
 import { TENDERS_URL } from '@/constants';
 import { clearAuth } from '@/features/auth/authSlice';
@@ -54,9 +57,13 @@ export const tenderApiSlice = createApi({
     }),
     getTenderById: builder.query<
       TenderByIdResponse,
-      string
+      GetTenderByIdRequest
     >({
-      query: (id) => `/${id}`,
+      query: ({ id, ...params }) => ({
+        url: `/${id}`,
+        method: 'GET',
+        params,
+      }),
     }),
 
     getCounties: builder.query<CountiesResponse, void>({

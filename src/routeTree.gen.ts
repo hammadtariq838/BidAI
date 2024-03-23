@@ -14,13 +14,11 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as ProtectedImport } from './routes/_protected'
 import { Route as AuthImport } from './routes/_auth'
 import { Route as ProtectedIndexImport } from './routes/_protected/index'
-import { Route as ProtectedSearchByPayItemsImport } from './routes/_protected/search-by-pay-items'
-import { Route as ProtectedSearchByBidsImport } from './routes/_protected/search-by-bids'
-import { Route as ProtectedProfileImport } from './routes/_protected/profile'
-import { Route as ProtectedBidGenerationImport } from './routes/_protected/bid-generation'
-import { Route as ProtectedBidComparisonImport } from './routes/_protected/bid-comparison'
-import { Route as ProtectedIdImport } from './routes/_protected/$id'
 import { Route as AuthSignInImport } from './routes/_auth/sign-in'
+import { Route as ProtectedBidsRouteImport } from './routes/_protected/bids/route'
+import { Route as ProtectedBidsIndexImport } from './routes/_protected/bids/index'
+import { Route as ProtectedBidsBidGenerationImport } from './routes/_protected/bids/bid-generation'
+import { Route as ProtectedBidsIdImport } from './routes/_protected/bids/$id'
 
 // Create/Update Routes
 
@@ -39,39 +37,31 @@ const ProtectedIndexRoute = ProtectedIndexImport.update({
   getParentRoute: () => ProtectedRoute,
 } as any)
 
-const ProtectedSearchByPayItemsRoute = ProtectedSearchByPayItemsImport.update({
-  path: '/search-by-pay-items',
-  getParentRoute: () => ProtectedRoute,
-} as any)
-
-const ProtectedSearchByBidsRoute = ProtectedSearchByBidsImport.update({
-  path: '/search-by-bids',
-  getParentRoute: () => ProtectedRoute,
-} as any)
-
-const ProtectedProfileRoute = ProtectedProfileImport.update({
-  path: '/profile',
-  getParentRoute: () => ProtectedRoute,
-} as any)
-
-const ProtectedBidGenerationRoute = ProtectedBidGenerationImport.update({
-  path: '/bid-generation',
-  getParentRoute: () => ProtectedRoute,
-} as any)
-
-const ProtectedBidComparisonRoute = ProtectedBidComparisonImport.update({
-  path: '/bid-comparison',
-  getParentRoute: () => ProtectedRoute,
-} as any)
-
-const ProtectedIdRoute = ProtectedIdImport.update({
-  path: '/$id',
-  getParentRoute: () => ProtectedRoute,
-} as any)
-
 const AuthSignInRoute = AuthSignInImport.update({
   path: '/sign-in',
   getParentRoute: () => AuthRoute,
+} as any)
+
+const ProtectedBidsRouteRoute = ProtectedBidsRouteImport.update({
+  path: '/bids',
+  getParentRoute: () => ProtectedRoute,
+} as any)
+
+const ProtectedBidsIndexRoute = ProtectedBidsIndexImport.update({
+  path: '/',
+  getParentRoute: () => ProtectedBidsRouteRoute,
+} as any)
+
+const ProtectedBidsBidGenerationRoute = ProtectedBidsBidGenerationImport.update(
+  {
+    path: '/bid-generation',
+    getParentRoute: () => ProtectedBidsRouteRoute,
+  } as any,
+)
+
+const ProtectedBidsIdRoute = ProtectedBidsIdImport.update({
+  path: '/$id',
+  getParentRoute: () => ProtectedBidsRouteRoute,
 } as any)
 
 // Populate the FileRoutesByPath interface
@@ -86,37 +76,29 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProtectedImport
       parentRoute: typeof rootRoute
     }
+    '/_protected/bids': {
+      preLoaderRoute: typeof ProtectedBidsRouteImport
+      parentRoute: typeof ProtectedImport
+    }
     '/_auth/sign-in': {
       preLoaderRoute: typeof AuthSignInImport
       parentRoute: typeof AuthImport
     }
-    '/_protected/$id': {
-      preLoaderRoute: typeof ProtectedIdImport
-      parentRoute: typeof ProtectedImport
-    }
-    '/_protected/bid-comparison': {
-      preLoaderRoute: typeof ProtectedBidComparisonImport
-      parentRoute: typeof ProtectedImport
-    }
-    '/_protected/bid-generation': {
-      preLoaderRoute: typeof ProtectedBidGenerationImport
-      parentRoute: typeof ProtectedImport
-    }
-    '/_protected/profile': {
-      preLoaderRoute: typeof ProtectedProfileImport
-      parentRoute: typeof ProtectedImport
-    }
-    '/_protected/search-by-bids': {
-      preLoaderRoute: typeof ProtectedSearchByBidsImport
-      parentRoute: typeof ProtectedImport
-    }
-    '/_protected/search-by-pay-items': {
-      preLoaderRoute: typeof ProtectedSearchByPayItemsImport
-      parentRoute: typeof ProtectedImport
-    }
     '/_protected/': {
       preLoaderRoute: typeof ProtectedIndexImport
       parentRoute: typeof ProtectedImport
+    }
+    '/_protected/bids/$id': {
+      preLoaderRoute: typeof ProtectedBidsIdImport
+      parentRoute: typeof ProtectedBidsRouteImport
+    }
+    '/_protected/bids/bid-generation': {
+      preLoaderRoute: typeof ProtectedBidsBidGenerationImport
+      parentRoute: typeof ProtectedBidsRouteImport
+    }
+    '/_protected/bids/': {
+      preLoaderRoute: typeof ProtectedBidsIndexImport
+      parentRoute: typeof ProtectedBidsRouteImport
     }
   }
 }
@@ -126,12 +108,11 @@ declare module '@tanstack/react-router' {
 export const routeTree = rootRoute.addChildren([
   AuthRoute.addChildren([AuthSignInRoute]),
   ProtectedRoute.addChildren([
-    ProtectedIdRoute,
-    ProtectedBidComparisonRoute,
-    ProtectedBidGenerationRoute,
-    ProtectedProfileRoute,
-    ProtectedSearchByBidsRoute,
-    ProtectedSearchByPayItemsRoute,
+    ProtectedBidsRouteRoute.addChildren([
+      ProtectedBidsIdRoute,
+      ProtectedBidsBidGenerationRoute,
+      ProtectedBidsIndexRoute,
+    ]),
     ProtectedIndexRoute,
   ]),
 ])

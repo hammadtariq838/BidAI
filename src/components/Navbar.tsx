@@ -1,10 +1,9 @@
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { clearAuth } from "@/features/auth/authSlice";
 import { useSignoutMutation } from "@/services/user/userApiSlice";
 import { toast } from "sonner";
 import { Link } from '@tanstack/react-router';
-import { cn } from "@/lib/utils";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -49,7 +48,7 @@ const Navbar = () => {
               </DropdownMenuItem>
               <DropdownMenuItem className="flex items-center gap-2">
                 <User className="h-5 w-5" />
-                <Link to="/profile">
+                <Link to="/">
                   Profile
                 </Link>
               </DropdownMenuItem>
@@ -87,7 +86,7 @@ const Navbar = () => {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      <nav className="flex items-center gap-4">
+      {/* <nav className="flex items-center gap-4">
         <Link to='/search-by-bids'
           className="text-white"
           activeProps={{
@@ -120,7 +119,7 @@ const Navbar = () => {
         >
           Bid generation
         </Link>
-      </nav>
+      </nav> */}
     </header >
   )
 }

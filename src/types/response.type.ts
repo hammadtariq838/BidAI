@@ -21,6 +21,10 @@ export type TenderByIdResponse = BaseResponse & {
   tender: Tender;
 };
 
+export type SearchByPayItemResponse = BaseResponse & {
+  items: Tender['items'];
+};
+
 export type CountiesResponse = BaseResponse & {
   counties: string[];
 };

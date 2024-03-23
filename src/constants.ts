@@ -5,3 +5,8 @@ export const BASE_URL =
 
 export const USERS_URL = `${BASE_URL}/api/users`;
 export const TENDERS_URL = `${BASE_URL}/api/tenders`;
+
+export type BidGenerationOrder =
+  | 'highest'
+  | 'lowest'
+  | 'average';
