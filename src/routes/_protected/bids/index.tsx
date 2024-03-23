@@ -16,8 +16,8 @@ const Screen = () => {
     county,
     tender_type,
     bidder,
-    budget_min,
-    budget_max,
+    budget_min: budget_min?.toString(),
+    budget_max: budget_max?.toString(),
   });
   const tenders = tendersData?.tenders || [];
   return (
