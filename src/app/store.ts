@@ -15,6 +15,7 @@ import {
 } from 'redux-persist';
 import authReducer from '@/features/auth/authSlice';
 import { userApiSlice } from '@/services/user/userApiSlice';
+import { tenderApiSlice } from '@/services/tender/tenderApiSlice';
 
 const persistConfig = {
   key: 'root',
@@ -25,6 +26,7 @@ const persistConfig = {
 const rootReducer = combineReducers({
   auth: authReducer,
   [userApiSlice.reducerPath]: userApiSlice.reducer,
+  [tenderApiSlice.reducerPath]: tenderApiSlice.reducer,
 });
 
 const persistedReducer = persistReducer(
@@ -46,7 +48,9 @@ export const store = configureStore({
           REGISTER,
         ],
       },
-    }).concat(userApiSlice.middleware),
+    })
+      .concat(userApiSlice.middleware)
+      .concat(tenderApiSlice.middleware),
 });
 
 export const persistor = persistStore(store);

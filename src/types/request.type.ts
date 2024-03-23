@@ -8,3 +8,11 @@ export type LoginUserRequest = {
   email: string;
   password: string;
 };
+
+export type GetTendersRequest = {
+  county?: string;
+  tender_type?: string;
+  bidder?: string;
+  budget_min?: number;
+  budget_max?: number;
+};

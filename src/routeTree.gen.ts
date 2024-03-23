@@ -19,6 +19,7 @@ import { Route as ProtectedSearchByBidsImport } from './routes/_protected/search
 import { Route as ProtectedProfileImport } from './routes/_protected/profile'
 import { Route as ProtectedBidGenerationImport } from './routes/_protected/bid-generation'
 import { Route as ProtectedBidComparisonImport } from './routes/_protected/bid-comparison'
+import { Route as ProtectedIdImport } from './routes/_protected/$id'
 import { Route as AuthSignInImport } from './routes/_auth/sign-in'
 
 // Create/Update Routes
@@ -63,6 +64,11 @@ const ProtectedBidComparisonRoute = ProtectedBidComparisonImport.update({
   getParentRoute: () => ProtectedRoute,
 } as any)
 
+const ProtectedIdRoute = ProtectedIdImport.update({
+  path: '/$id',
+  getParentRoute: () => ProtectedRoute,
+} as any)
+
 const AuthSignInRoute = AuthSignInImport.update({
   path: '/sign-in',
   getParentRoute: () => AuthRoute,
@@ -83,6 +89,10 @@ declare module '@tanstack/react-router' {
     '/_auth/sign-in': {
       preLoaderRoute: typeof AuthSignInImport
       parentRoute: typeof AuthImport
+    }
+    '/_protected/$id': {
+      preLoaderRoute: typeof ProtectedIdImport
+      parentRoute: typeof ProtectedImport
     }
     '/_protected/bid-comparison': {
       preLoaderRoute: typeof ProtectedBidComparisonImport
@@ -116,6 +126,7 @@ declare module '@tanstack/react-router' {
 export const routeTree = rootRoute.addChildren([
   AuthRoute.addChildren([AuthSignInRoute]),
   ProtectedRoute.addChildren([
+    ProtectedIdRoute,
     ProtectedBidComparisonRoute,
     ProtectedBidGenerationRoute,
     ProtectedProfileRoute,

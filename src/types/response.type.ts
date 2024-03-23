@@ -1,17 +1,37 @@
+import { Tender, User } from './primitive.type';
+
 export type BaseResponse = {
   success: boolean;
   message: string;
 };
 
-export type User = {
-  _id: string;
-  name: string;
-  email: string;
-  avatar: string;
-  isAdmin: boolean;
-  isActive: boolean;
-};
-
 export type UserResponse = BaseResponse & {
   account: User;
+};
+
+export type UsersResponse = BaseResponse & {
+  accounts: User[];
+};
+
+export type TendersResponse = BaseResponse & {
+  tenders: Tender[];
+};
+
+export type TenderByIdResponse = BaseResponse & {
+  tender: Tender;
+};
+
+export type CountiesResponse = BaseResponse & {
+  counties: string[];
+};
+
+export type TenderTypesResponse = BaseResponse & {
+  tenderTypes: string[];
+};
+
+export type BiddersResponse = BaseResponse & {
+  bidders: {
+    name: string;
+    quote: number;
+  }[];
 };

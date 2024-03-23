@@ -125,7 +125,6 @@ const Screen = () => {
   );
 };
 
-
 function Metadata() {
   return (
     <div className='flex flex-col w-[674px] border rounded-md divide-y-1 shadow'>
