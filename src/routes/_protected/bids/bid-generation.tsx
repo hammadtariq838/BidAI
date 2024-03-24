@@ -15,8 +15,6 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
-
-
 import { Form, FormControl, FormField } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
@@ -31,6 +29,10 @@ import { calculateUpdatedPrice } from '@/lib/utils';
 import { Plus, Trash } from 'lucide-react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect } from 'react';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
+import ExcelJs from 'exceljs';
+
 
 const mapTenderToForm = (tenderItem: Tender['items'][number], order: BidGenerationOrder) => {
   const bids = tenderItem.bids.map(bid => bid ?? 0);
@@ -46,7 +48,6 @@ const mapTenderToForm = (tenderItem: Tender['items'][number], order: BidGenerati
         ? bids[bids.length - 1]
         : order === 'lowest'
           ? bids[0]
-          // if a or b is null, treat it as 0 for the calculation
           : bids.reduce((a, b) => a + b, 0) / bids.length
       ).toFixed(2) || 0
     ),
@@ -82,12 +83,82 @@ const bidSchema = z.object({
   ),
 });
 
+function exportToExcel(items: z.infer<typeof bidSchema>['items']) {
+  const workbook = new ExcelJs.Workbook();
+  const sheet = workbook.addWorksheet('Bid Generation');
+  sheet.columns = [
+    { header: 'Ref No.', key: 'ref_no', width: 10 },
+    { header: 'Item', key: 'item', width: 20 },
+    { header: 'Item Description', key: 'item_description', width: 30 },
+    { header: 'Item Qty.', key: 'item_qnty', width: 10 },
+    { header: 'Units', key: 'units', width: 10 },
+    { header: 'Bid Price', key: 'bid_price', width: 15 },
+  ];
+  items.forEach((item) => {
+    sheet.addRow({
+      ref_no: item.ref_no,
+      item: item.item,
+      item_description: item.item_description,
+      item_qnty: item.item_qnty,
+      units: item.units,
+      bid_price: item.bid_price,
+    });
+  });
+  workbook.xlsx.writeBuffer().then((buffer) => {
+    const blob = new Blob([buffer], {
+      type:
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'bid-generation.xlsx';
+    a.click();
+  });
+}
+
+function exportToPDF(items: z.infer<typeof bidSchema>['items']) {
+  const doc = new jsPDF();
+  const data = items.map((item) => [
+    item.ref_no,
+    item.item,
+    item.item_description,
+    item.item_qnty,
+    item.units,
+    item.bid_price,
+  ]);
+  autoTable(doc, {
+    head: [
+      ['Ref No.', 'Item', 'Item Description', 'Item Qty.', 'Units', 'Bid Price'],
+    ],
+    body: data,
+  });
+  doc.save('bid-generation.pdf');
+}
+
+function exportToCSV(items: z.infer<typeof bidSchema>['items']) {
+  const csv = items.map((item) =>
+    [
+      item.ref_no,
+      item.item,
+      item.item_description,
+      item.item_qnty,
+      item.units,
+      item.bid_price,
+    ].join(',')
+  ).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'bid-generation.csv';
+  a.click();
+}
+
 const Screen = () => {
   const { id, order } = Route.useSearch();
   const { data: tenderData } = useGetTenderByIdQuery({ id });
   const tender = tenderData?.tender;
-
-  console.log('items', tender?.items)
 
   const form = useForm<z.infer<typeof bidSchema>>({
     resolver: zodResolver(bidSchema),
@@ -99,34 +170,100 @@ const Screen = () => {
     reset({ items: defaultValues });
   }, [tender, order, reset]);
 
-
-  console.log('form items', watch('items'));
-
   function onSubmit(values: z.infer<typeof bidSchema>) {
+    // // Map the form values into the appropriate format
+    // const bid = values.items.map(item => ({
+    //   ref_no: item.ref_no,
+    //   item: item.item,
+    //   item_description: item.item_description,
+    //   item_qnty: item.item_qnty,
+    //   units: item.units,
+    //   bid_price: item.bid_price,
+    //   escalation_percent: item.escalation_percent,
+    // }));
+    // // Store the metadata alongside the bid - to be used for future reference
+    // const metadata = {
+    //   reference_tender: tender?._id,
+    //   tender_id: tender?.tender_id,
+    //   order,
+    // };
+    // // Save the bid to the database
+    // console.log(bid, metadata);
+
     console.log('values', values);
     toast.success('Bid generated successfully!');
   }
 
+  function applyEscalationToAllItems(escalationPercent: number) {
+    const items = watch('items');
+    const updatedItems = items.map(item => ({
+      ...item,
+      escalation_percent: escalationPercent,
+    }));
+    form.setValue('items', updatedItems);
+    toast.success(`Escalation of ${escalationPercent}% applied to all items!`);
+  }
+
+
+  function addItem(index: number) {
+    const items = watch('items');
+    const newItems = [
+      ...items.slice(0, index),
+      {
+        ref_no: items[index].ref_no,
+        item: '',
+        item_description: '',
+        item_qnty: 0,
+        units: '',
+        bid_price: 0,
+        escalation_percent: 0,
+        isChecked: false,
+      },
+      ...items.slice(index),
+    ].map((item, i) => ({ ...item, ref_no: (i + 1) * 10 }));
+    form.setValue('items', newItems);
+    toast.success('Item added successfully!');
+  }
+
+  const handleExport = (exportType: string) => {
+    switch (exportType) {
+      case 'excel':
+        exportToExcel(form.watch('items'));
+        break;
+      case 'pdf':
+        exportToPDF(form.watch('items'));
+        break;
+      case 'csv':
+        exportToCSV(form.watch('items'));
+        break;
+      default:
+        break;
+    }
+  };
+
+
 
   return (
-
-    <main className="mx-auto my-3">
-      <div className="flex justify-between">
-        <h2 className="text-3xl font-bold text-center text-primary">
-          Bid Generation
-        </h2>
-
-        <div className="flex gap-2">
+    <main className="flex flex-col gap-4 bg-white w-full py-6 px-8">
+      <div className="flex gap-2 justify-between w-full">
+        <div className='flex items-center gap-4'>
+          <Button
+            type="button"
+            onClick={() => addItem(0)}
+          >
+            Add Item
+          </Button>
           <Select
-          // onValueChange={(value) => {
-          //   applyEscalationToAllItems(Number(value));
-          // }}
+            onValueChange={(value) => {
+              applyEscalationToAllItems(Number(value));
+            }}
           >
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Apply Escalation" />
             </SelectTrigger>
             <SelectContent>
               <SelectGroup>
+                <SelectItem value="0">0%</SelectItem>
                 <SelectItem value="5">5%</SelectItem>
                 <SelectItem value="10">10%</SelectItem>
                 <SelectItem value="20">20%</SelectItem>
@@ -134,31 +271,14 @@ const Screen = () => {
               </SelectGroup>
             </SelectContent>
           </Select>
-          <Button
-            type="button"
-          // onClick={() => addItem(form.getValues('items').length)}
-          >
-            Add Item
-          </Button>
         </div>
-      </div>
-      <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="flex flex-col gap-4"
-        >
-          <div className="flex flex-col items-end">
-            <div className="mt-8 flow-root">
-              <div className="-mx-4 -my-2 sm:-mx-6 lg:-mx-8">
-                <div className="relative overflow-y-auto h-[450px] mx-8 rounded-lg bg-brand bg-opacity-30">
-                  <FormTable form={form} />
-                </div>
-              </div>
-            </div>
-          </div>
 
+        <div className='flex items-center gap-4'>
+          {/* <Button type="submit"
+            onClick={() => form.handleSubmit(onSubmit)()}
+          >Save</Button> */}
           <Select
-          //  onValueChange={(value) => handleExport(value)}
+            onValueChange={(value) => handleExport(value)}
           >
             <SelectTrigger className="w-28">
               <SelectValue placeholder="Export as" />
@@ -171,6 +291,18 @@ const Screen = () => {
               </SelectGroup>
             </SelectContent>
           </Select>
+        </div>
+      </div>
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="flex flex-col gap-4"
+        >
+          <div className="flow-root">
+            <div className="relative overflow-y-auto max-h-[450px] rounded-lg border w-max scroll-smooth">
+              <FormTable form={form} />
+            </div>
+          </div>
         </form>
       </Form>
     </main>
@@ -182,6 +314,29 @@ export default function FormTable({
 }: {
   form: ReturnType<typeof useForm<z.infer<typeof bidSchema>>>;
 }) {
+  const copyItem = (index: number) => {
+    const items = form.watch('items');
+    const current_item = { ...items[index], isChecked: false };
+    const newItem = { ...current_item };
+    const updatedItems = [
+      ...items.slice(0, index),
+      current_item,
+      newItem,
+      ...items.slice(index + 1),
+    ].map((item, i) => ({ ...item, ref_no: (i + 1) * 10 }));
+    form.setValue('items', updatedItems);
+    toast.success('Item copied successfully!');
+  };
+
+  const deleteItem = (index: number) => {
+    const items = form.watch('items');
+    const updatedItems = [...items.slice(0, index), ...items.slice(index + 1)].map(
+      (item, i) => ({ ...item, ref_no: (i + 1) * 10 })
+    );
+    form.setValue('items', updatedItems);
+    toast.success('Item deleted successfully!');
+  };
+
   return (
     <table
       className="w-[1200px] border-separate border-spacing-0"
@@ -201,8 +356,8 @@ export default function FormTable({
             'Item Description',
             'Item Qty.',
             'Units',
+            'Reference Price',
             'Bid Price',
-            'Updated Price',
             'Escalation %',
           ].map((header, index) => (
             <th
@@ -248,11 +403,11 @@ export default function FormTable({
                       <div className="items-center bg-red-500 flex max-w-[64px] flex-col py-6 px-5 rounded-xl gap-3">
                         <Plus
                           className="w-6 h-6 text-black cursor-pointer"
-                        // onClick={() => copyItem(index)}
+                          onClick={() => copyItem(index)}
                         />
                         <Trash
                           className="w-6 h-6 text-red-500 cursor-pointer"
-                        // onClick={() => deleteItem(index)}
+                          onClick={() => deleteItem(index)}
                         />
                       </div>
                     </PopoverClose>

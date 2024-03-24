@@ -195,7 +195,7 @@ function Table(
     units: "Units",
   };
 
-  const maxBids = tender?.items.reduce((max, item) => Math.max(max, item.bids.length), 0) || 0;
+  const bidders = tender?.bidders.map(bidder => bidder.name) || [];
 
   return (
     <>
@@ -220,9 +220,9 @@ function Table(
                     {label}
                   </th>
                 ))}
-                {[...Array(maxBids)].map((_, index) => (
-                  <th key={`bid-${index}`} className="py-3.5 px-4 text-xs font-medium text-start sticky top-0 z-10 bg-[#F9FAFB]">
-                    {`Bid ${index + 1}`}
+                {bidders.map((_, index) => (
+                  <th key={`bid-${index}`} className="py-3.5 px-4 text-xs font-medium text-start sticky top-0 z-10 bg-[#F9FAFB] max-w-[120px]">
+                    {bidders[index]}
                   </th>
                 ))}
               </tr>
@@ -235,13 +235,13 @@ function Table(
                 >
                   {Object.keys(columnLabels).map((key, idx) => (
                     <td
-                      className="px-4 py-4 whitespace-nowrap text-xs"
+                      className="px-4 py-4 whitespace-wrap text-xs max-w-[200px]"
                       key={idx}
                     >
                       {item[key as keyof typeof item]}
                     </td>
                   ))}
-                  {[...Array(maxBids)].map((_, bidIdx) => (
+                  {bidders.map((_, bidIdx) => (
                     <td key={`bid-value-${bidIdx}`} className="px-4 py-4 whitespace-nowrap text-xs">
                       {item.bids[bidIdx] ? item.bids[bidIdx] : ''}
                     </td>
