@@ -339,7 +339,7 @@ export default function FormTable({
 
   return (
     <table
-      className="w-[1200px] border-separate border-spacing-0"
+      className="max-w-[1000px] border-separate border-spacing-0"
       id="bid-generation-table"
     >
       <thead className="bg-[#F9FAFB]">
