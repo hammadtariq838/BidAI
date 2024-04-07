@@ -3,6 +3,7 @@ import { LayoutGrid, List } from 'lucide-react';
 import { useGetTendersQuery } from '@/services/tender/tenderApiSlice';
 import { Fragment } from 'react';
 import { Tender } from '@/types/primitive.type';
+import Loader from '@/components/Loader';
 
 const Screen = () => {
   const {
@@ -12,7 +13,7 @@ const Screen = () => {
     budget_min,
     budget_max,
   } = Route.useSearch();
-  const { data: tendersData } = useGetTendersQuery({
+  const { data: tendersData, isLoading } = useGetTendersQuery({
     county,
     tender_type,
     bidder,
@@ -21,29 +22,36 @@ const Screen = () => {
   });
   const tenders = tendersData?.tenders || [];
   return (
-    <div className='flex flex-col bg-white grow rounded-t-lg px-10 py-3 gap-11 pb-10'>
-      <div className="flex items-center justify-between">
-        <span>
-          {tenders.length}
-          {' '}
-          results returned</span>
-        <div className="flex gap-4">
-          <LayoutGrid size={24} className='cursor-pointer' />
-          <List size={24} className='cursor-pointer' />
-        </div>
-      </div>
-      <div className="flex flex-col gap-6">
-        {
-          tenders.map((tender) => (
-            <Fragment key={tender.tender_id}>
-              <Link to={'./$id'} params={{ id: tender._id }}>
-                <TenderItem tender={tender} />
-              </Link>
-            </Fragment>
-          ))
-        }
-      </div>
-    </div>
+    <main className='bg-white grow rounded-t-lg px-10 py-3 pb-10'>
+      {
+        isLoading ? <Loader /> : (
+          <div className='flex flex-col gap-11'>
+            <div className="flex items-center justify-between">
+              <span>
+                {tenders.length}
+                {' '}
+                results returned</span>
+              <div className="flex gap-4">
+                <LayoutGrid size={24} className='cursor-pointer' />
+                <List size={24} className='cursor-pointer' />
+              </div>
+            </div>
+            <div className="flex flex-col gap-6">
+              {
+                tenders.map((tender) => (
+                  <Fragment key={tender.tender_id}>
+                    <Link to={'./$id'} params={{ id: tender._id }}>
+                      <TenderItem tender={tender} />
+                    </Link>
+                  </Fragment>
+                ))
+              }
+            </div>
+          </div>
+        )
+      }
+    </main>
+
   )
 }
 
