@@ -63,7 +63,7 @@ const Screen = () => {
 
 function TenderItem(
   { tender }: {
-    tender: Tender;
+    tender: Omit<Tender, 'items'>;
   }
 ) {
   return (
