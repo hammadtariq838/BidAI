@@ -4,21 +4,22 @@ import { useGetTendersQuery } from '@/services/tender/tenderApiSlice';
 import { Fragment } from 'react';
 import { Tender } from '@/types/primitive.type';
 import Loader from '@/components/Loader';
+import { formatBudget } from '@/lib/utils';
 
 const Screen = () => {
   const {
     bidder,
     county,
     tender_type,
-    budget_min,
-    budget_max,
+    // budget_min,
+    // budget_max,
   } = Route.useSearch();
   const { data: tendersData, isLoading } = useGetTendersQuery({
     county,
     tender_type,
     bidder,
-    budget_min: budget_min?.toString(),
-    budget_max: budget_max?.toString(),
+    // budget_min: budget_min?.toString(),
+    // budget_max: budget_max?.toString(),
   });
   const tenders = tendersData?.tenders || [];
   return (
@@ -71,13 +72,13 @@ function TenderItem(
       <div className=' grow flex items-center divide-x-1'>
         <div className='flex items-center w-2/5 h-full px-4'>
           <h3 className='font-semibold text-2xl'>
-            TENDER ID - {tender.tender_id}
+            Contract ID - {tender.tender_id}
           </h3>
         </div>
         <div className="flex items-center w-3/5 h-full px-4">
           <p>
             {/* the first bidder name in the list */}
-            <span className='font-semibold'>Contractor:</span>
+            <span className='font-semibold'>Bid Winner:</span>
             {' '}
             {tender.bidders[0].name}
           </p>
@@ -104,7 +105,7 @@ function TenderItem(
           </div>
           <div className='flex items-center w-3/5 h-full px-4'>
             <span>
-              {tender.budget}
+              {formatBudget(tender.budget)}
             </span>
           </div>
           <div className='flex items-center w-2/5 h-full px-4'>

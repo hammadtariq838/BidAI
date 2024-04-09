@@ -26,6 +26,7 @@ import {
   SelectItem,
 } from '@/components/ui/select';
 import { BidGenerationOrder } from '@/constants';
+import { formatBudget } from '@/lib/utils';
 
 
 const Screen = () => {
@@ -168,7 +169,7 @@ function Metadata({ tender }: {
           </div>
           <div className='flex items-center w-1/4 h-full px-4'>
             <span className='text-sm'>
-              {tender?.budget}
+              {formatBudget(tender?.budget || 0)}
             </span>
           </div>
           <div className='flex items-center w-1/4 h-full px-4'>

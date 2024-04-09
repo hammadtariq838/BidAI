@@ -12,7 +12,7 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { useGetCountiesQuery, useGetBiddersQuery, useGetTenderTypesQuery } from '@/services/tender/tenderApiSlice';
 import { z } from 'zod';
-import { Slider } from '@/components/Slider';
+// import { Slider } from '@/components/Slider';
 
 const Screen = () => {
   return (
@@ -33,8 +33,8 @@ function FilterSection() {
     bidder,
     county,
     tender_type,
-    budget_min,
-    budget_max,
+    // budget_min,
+    // budget_max,
   } = Route.useSearch();
   const { data: countiesData } = useGetCountiesQuery();
   const counties = countiesData?.counties || [];
@@ -133,7 +133,7 @@ function FilterSection() {
       </div>
 
       {/* price range (in dollars) {from and to two input fields} */}
-      <div className="flex flex-col gap-3">
+      {/* <div className="flex flex-col gap-3">
         <Label>Price range (in dollars)</Label>
         <Slider
           max={10000000}
@@ -152,7 +152,7 @@ function FilterSection() {
           }}
           className="w-full"
         />
-      </div>
+      </div> */}
 
       <Button
         variant='outline'
@@ -171,8 +171,8 @@ const filterSchema = z.object({
   county: z.string().optional(),
   tender_type: z.string().optional(),
   bidder: z.string().optional(),
-  budget_min: z.number().optional(),
-  budget_max: z.number().optional()
+  // budget_min: z.number().optional(),
+  // budget_max: z.number().optional()
 })
 
 export const Route = createFileRoute('/_protected/bids')({
