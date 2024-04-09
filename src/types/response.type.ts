@@ -13,8 +13,9 @@ export type UsersResponse = BaseResponse & {
   accounts: User[];
 };
 
+// excluded the items field from the Tender type
 export type TendersResponse = BaseResponse & {
-  tenders: Tender[];
+  tenders: Omit<Tender, 'items'>[];
 };
 
 export type TenderByIdResponse = BaseResponse & {
