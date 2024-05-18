@@ -244,54 +244,32 @@ const Screen = () => {
 
 
   return (
-    <main className="flex flex-col gap-4 bg-white w-full py-6 px-8">
-      <div className="flex gap-2 justify-between w-full">
-        <div className='flex items-center gap-4'>
-          <Button
-            type="button"
-            onClick={() => addItem(0)}
-          >
-            Add Item
-          </Button>
-          <Select
-            onValueChange={(value) => {
-              applyEscalationToAllItems(Number(value));
-            }}
-          >
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Apply Escalation" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectItem value="0">0%</SelectItem>
-                <SelectItem value="5">5%</SelectItem>
-                <SelectItem value="10">10%</SelectItem>
-                <SelectItem value="20">20%</SelectItem>
-                <SelectItem value="30">30%</SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-        </div>
-
-        <div className='flex items-center gap-4'>
-          {/* <Button type="submit"
-            onClick={() => form.handleSubmit(onSubmit)()}
-          >Save</Button> */}
-          <Select
-            onValueChange={(value) => handleExport(value)}
-          >
-            <SelectTrigger className="w-28">
-              <SelectValue placeholder="Export as" />
-            </SelectTrigger>
-            <SelectContent className="bg-white text-primary">
-              <SelectGroup>
-                <SelectItem value="excel">Excel</SelectItem>
-                <SelectItem value="pdf">PDF</SelectItem>
-                <SelectItem value="csv">CSV</SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-        </div>
+    <main className="flex flex-col gap-2 bg-white w-full py-6 px-8">
+      <div className='flex items-center gap-4 self-end'>
+        <Button
+          type="button"
+          onClick={() => addItem(0)}
+        >
+          Add Item
+        </Button>
+        <Select
+          onValueChange={(value) => {
+            applyEscalationToAllItems(Number(value));
+          }}
+        >
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Apply Escalation" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              <SelectItem value="0">0%</SelectItem>
+              <SelectItem value="5">5%</SelectItem>
+              <SelectItem value="10">10%</SelectItem>
+              <SelectItem value="20">20%</SelectItem>
+              <SelectItem value="30">30%</SelectItem>
+            </SelectGroup>
+          </SelectContent>
+        </Select>
       </div>
       <Form {...form}>
         <form
@@ -299,12 +277,26 @@ const Screen = () => {
           className="flex flex-col gap-4"
         >
           <div className="flow-root">
-            <div className="relative overflow-y-auto max-h-[450px] rounded-lg border w-max scroll-smooth">
+            <div className="relative overflow-y-auto max-h-[400px] rounded-lg border w-full scroll-smooth">
               <FormTable form={form} />
             </div>
           </div>
         </form>
       </Form>
+      <Select
+        onValueChange={(value) => handleExport(value)}
+      >
+        <SelectTrigger className="w-28 self-end bg-black text-white">
+          <SelectValue placeholder="Export as" />
+        </SelectTrigger>
+        <SelectContent className="bg-white text-primary">
+          <SelectGroup>
+            <SelectItem value="excel">Excel</SelectItem>
+            <SelectItem value="pdf">PDF</SelectItem>
+            <SelectItem value="csv">CSV</SelectItem>
+          </SelectGroup>
+        </SelectContent>
+      </Select>
     </main>
   )
 }

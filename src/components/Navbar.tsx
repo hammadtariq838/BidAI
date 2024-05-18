@@ -32,7 +32,7 @@ const Navbar = () => {
             {/* show the first chracter of the user's name (MH) for Muhammad Hassan */}
             <div className="flex items-center justify-center h-10 w-10 rounded-full bg-white cursor-pointer">
               {
-                user?.account.name.split(' ').map((name) => name[0]).join('')
+                user?.account?.name?.split(' ').map((name) => name[0]).join('')
               }
             </div>
           </DropdownMenuTrigger>
