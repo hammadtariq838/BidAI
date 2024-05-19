@@ -40,3 +40,21 @@ export type BiddersResponse = BaseResponse & {
     quote: number;
   }[];
 };
+
+export type SummaryResponse = BaseResponse & {
+  summary: {
+    totalProjects: number;
+    totalBidTypes: number;
+    totalContractors: number;
+    totalCounties: number;
+    budgetStats: {
+      min: number;
+      max: number;
+      mean: number;
+    };
+    countyTenderCounts: {
+      county: string;
+      count: number;
+    }[];
+  };
+};

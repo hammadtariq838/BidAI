@@ -22,7 +22,8 @@ const Navbar = () => {
   const user = useAppSelector((state) => state.auth.user);
 
   return (
-    <header className="flex flex-col gap-4 h-36 bg-[#023047] px-12 pt-5">
+    // h-36
+    <header className="flex flex-col gap-4 h-24 bg-[#023047] px-12 pt-5">
       <div className="flex justify-between items-center">
         <Link to='/'>
           <img src="/logo.svg" alt="BidAI Logo" className='w-[172px] h-[59px]' />

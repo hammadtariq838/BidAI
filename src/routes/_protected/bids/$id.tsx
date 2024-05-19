@@ -133,7 +133,6 @@ const Screen = () => {
               <Table tender={tender} />
             </div>
           </div>
-
         </>
       }
     </main>

@@ -11,6 +11,7 @@ import {
   CountiesResponse,
   TenderTypesResponse,
   BiddersResponse,
+  SummaryResponse,
 } from '@/types/response.type';
 import {
   GetTenderByIdRequest,
@@ -78,6 +79,9 @@ export const tenderApiSlice = createApi({
     getBidders: builder.query<BiddersResponse, void>({
       query: () => '/bidders',
     }),
+    getSummary: builder.query<SummaryResponse, void>({
+      query: () => '/summary',
+    }),
   }),
 });
 
@@ -87,4 +91,5 @@ export const {
   useGetBiddersQuery,
   useGetCountiesQuery,
   useGetTenderTypesQuery,
+  useGetSummaryQuery,
 } = tenderApiSlice;
