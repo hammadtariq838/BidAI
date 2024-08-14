@@ -28,7 +28,7 @@ import { PopoverClose } from '@radix-ui/react-popover';
 import { calculateUpdatedPrice } from '@/lib/utils';
 import { Plus, Trash } from 'lucide-react';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import ExcelJs from 'exceljs';
@@ -160,6 +160,8 @@ const Screen = () => {
   const { data: tenderData } = useGetTenderByIdQuery({ id });
   const tender = tenderData?.tender;
 
+  const [percentEscalation, setPercentEscalation] = useState(0)
+    ;
   const form = useForm<z.infer<typeof bidSchema>>({
     resolver: zodResolver(bidSchema),
   });
@@ -244,40 +246,31 @@ const Screen = () => {
 
 
   return (
-    <main className="flex flex-col gap-2 bg-white w-full py-6 px-8">
-      <div className='flex items-center gap-4 self-end'>
+    <main className="flex flex-col gap-2 bg-white w-full py-3 px-8">
+      <div className='flex items-center justify-between'>
         <Button
           type="button"
+          variant='outline'
           onClick={() => addItem(0)}
         >
           Add Item
         </Button>
-        <Select
-          onValueChange={(value) => {
-            applyEscalationToAllItems(Number(value));
-          }}
-        >
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Apply Escalation" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectGroup>
-              <SelectItem value="0">0%</SelectItem>
-              <SelectItem value="5">5%</SelectItem>
-              <SelectItem value="10">10%</SelectItem>
-              <SelectItem value="20">20%</SelectItem>
-              <SelectItem value="30">30%</SelectItem>
-            </SelectGroup>
-          </SelectContent>
-        </Select>
+        <div className="flex items-center gap-2 5">
+          <Input placeholder="5%" className='w-[280px]' type='number' min='0' max='500' onChange={(e) => setPercentEscalation(Number(e.target.value))} />
+          <Button
+            onClick={() => applyEscalationToAllItems(Number(percentEscalation))}
+          >
+            Apply Escalation
+          </Button>
+        </div>
       </div>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
           className="flex flex-col gap-4"
         >
-          <div className="flow-root">
-            <div className="relative overflow-y-auto max-h-[400px] rounded-lg border w-full scroll-smooth">
+          <div className="flow-root max-h-full">
+            <div className="relative overflow-y-auto max-h-[460px] rounded-lg border w-full scroll-smooth">
               <FormTable form={form} />
             </div>
           </div>
@@ -297,7 +290,7 @@ const Screen = () => {
           </SelectGroup>
         </SelectContent>
       </Select>
-    </main>
+    </main >
   )
 }
 

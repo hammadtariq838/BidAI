@@ -5,7 +5,7 @@ import { useGetTenderByIdQuery } from '@/services/tender/tenderApiSlice';
 import { Tender } from '@/types/primitive.type';
 import { Button } from '@/components/ui/button';
 import { z } from 'zod';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import {
   Dialog,
@@ -37,7 +37,17 @@ const Screen = () => {
   const tender = tenderData?.tender;
   const [order, setOrder] = useState<'' | BidGenerationOrder>('');
 
+  const [search, setSearch] = useState(pay_item || '');
+
   const navigate = useNavigate({ from: Route.fullPath });
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      navigate({ search: { pay_item: search } })
+    }, 500)
+    return () => clearTimeout(timeout)
+  }, [search, navigate]);
+
 
   return (
     <main className='flex flex-col bg-white grow rounded-t-lg px-5 py-2 gap-4 pb-10'>
@@ -52,25 +62,15 @@ const Screen = () => {
             <span className='font-semibold text-2xl'>
               {tender?.department}
             </span>
-            <form className='flex gap-2'
-              onSubmit={(e) => {
-                e.preventDefault();
-                const formData = new FormData(e.target as HTMLFormElement);
-                const pay_item = formData.get('search') as string;
-                navigate({ search: { pay_item } });
-              }}
-            >
-              <div className="flex items-center px-4 gap-2 border rounded w-[225px] border-[#CBD5E1]">
-                <Search className='h-4 w-4 text-slate-500' />
-                <Input id="search" name="search" type="search" placeholder="Search by pay item ..." className='border-none rounded-none bg-transparent px-0 h-auto outline-none focus-visible:ring-0 focus-visible:ring-offset-0'
-                  defaultValue={pay_item}
-                />
-              </div>
-              {/* button submit */}
-              <Button variant={'outline'}>
-                Search
-              </Button>
-            </form>
+            <div className="flex items-center px-4 gap-2 border rounded w-[225px] border-[#CBD5E1]">
+              <Search className='h-4 w-4 text-slate-500' />
+              <Input id="search" name="search" type="search" placeholder="Search by pay item ..." className='border-none rounded-none bg-transparent px-0 h-auto outline-none focus-visible:ring-0 focus-visible:ring-offset-0'
+                value={search}
+                onChange={(e) => {
+                  setSearch(e.target.value);
+                }}
+              />
+            </div>
           </div>
           <div className="flex items-end gap-[100px]">
             <Metadata tender={tender} />

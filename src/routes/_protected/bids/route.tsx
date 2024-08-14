@@ -56,106 +56,137 @@ function FilterSection() {
       </div>
       <div className="flex flex-col gap-1">
         <Label>Project type</Label>
-        <Select defaultValue={tender_type} onValueChange={(value) => {
-          navigate({
-            to: Route.fullPath,
-            search: (previous) => ({
-              ...previous,
-              tender_type: value
-            })
-          })
-        }
-        }>
-          <SelectTrigger>
-            <SelectValue placeholder="-All" />
-          </SelectTrigger>
-          <SelectContent>
-            {
-              tenderTypes.map((type) => (
-                <SelectItem key={type} value={type}>{type}</SelectItem>
-              ))
-            }
-          </SelectContent>
-        </Select>
-      </div>
-      <div className="flex flex-col gap-1">
-        <Label>Contractor</Label>
-        <Select defaultValue={bidder} onValueChange={(value) => {
-          navigate({
-            to: Route.fullPath,
-            search: (previous) => ({
-              ...previous,
-              bidder: value
-            })
-          })
-        }
-        }>
-          <SelectTrigger>
-            <SelectValue placeholder="-All" />
-          </SelectTrigger>
-          <SelectContent>
-            {
-              bidders.map((bidder) => (
-                <SelectItem key={bidder.name} value={bidder.name}>{bidder.name}</SelectItem>
-              ))
-            }
-          </SelectContent>
-        </Select>
-      </div>
-      <div className="flex flex-col gap-2">
-        <Label>Location (County / State)</Label>
-        <Select defaultValue={county} onValueChange={(value) => {
-          navigate({
-            to: Route.fullPath,
-            search: (previous) => ({
-              ...previous,
-              county: value
-            })
-          })
-        }
-        }>
-          <SelectTrigger>
-            <SelectValue placeholder="-All" />
-          </SelectTrigger>
-          <SelectContent>
-            {
-              counties.map((county) => (
-                <SelectItem key={county} value={county}>{county}</SelectItem>
-              ))
-            }
-          </SelectContent>
-        </Select>
-      </div>
-
-      {/* price range (in dollars) {from and to two input fields} */}
-      {/* <div className="flex flex-col gap-3">
-        <Label>Price range (in dollars)</Label>
-        <Slider
-          max={10000000}
-          min={0}
-          step={100000}
-          value={[Number(budget_min) || 0, Number(budget_max) || 10000000]}
-          onValueChange={(value) => {
+        <div className="flex items-center gap-2">
+          <Select defaultValue={tender_type} onValueChange={(value) => {
             navigate({
               to: Route.fullPath,
               search: (previous) => ({
                 ...previous,
-                budget_min: value[0],
-                budget_max: value[1]
+                tender_type: value
               })
             })
-          }}
-          className="w-full"
-        />
-      </div> */}
-
+          }
+          }>
+            <SelectTrigger>
+              <SelectValue placeholder="-All" />
+            </SelectTrigger>
+            <SelectContent>
+              {
+                tenderTypes.map((type) => (
+                  <SelectItem key={type} value={type}>{type}</SelectItem>
+                ))
+              }
+            </SelectContent>
+          </Select>
+          <Button
+            variant='outline'
+            type='reset'
+            className='bg-transparent w-max self-end font-medium border-[#023047]'
+            onClick={() => {
+              navigate({
+                to: Route.fullPath,
+                search: (previous) => ({
+                  ...previous,
+                  tender_type: undefined
+                })
+              })
+            }}
+          >
+            Reset
+          </Button>
+        </div>
+      </div>
+      <div className="flex flex-col gap-1">
+        <Label>Contractor</Label>
+        <div className="flex items-center gap-2">
+          <Select defaultValue={bidder} onValueChange={(value) => {
+            navigate({
+              to: Route.fullPath,
+              search: (previous) => ({
+                ...previous,
+                bidder: value
+              })
+            })
+          }
+          }>
+            <SelectTrigger>
+              <SelectValue placeholder="-All" />
+            </SelectTrigger>
+            <SelectContent>
+              {
+                bidders.map((bidder) => (
+                  <SelectItem key={bidder.name} value={bidder.name}>{bidder.name}</SelectItem>
+                ))
+              }
+            </SelectContent>
+          </Select>
+          <Button
+            variant='outline'
+            type='reset'
+            className='bg-transparent w-max self-end font-medium border-[#023047]'
+            onClick={() => {
+              navigate({
+                to: Route.fullPath,
+                search: (previous) => ({
+                  ...previous,
+                  bidder: undefined
+                })
+              })
+            }}
+          >
+            Reset
+          </Button>
+        </div>
+      </div>
+      <div className="flex flex-col gap-2">
+        <Label>Location (County / State)</Label>
+        <div className="flex items-center gap-2">
+          <Select defaultValue={county} onValueChange={(value) => {
+            navigate({
+              to: Route.fullPath,
+              search: (previous) => ({
+                ...previous,
+                county: value
+              })
+            })
+          }
+          }>
+            <SelectTrigger>
+              <SelectValue placeholder="-All" />
+            </SelectTrigger>
+            <SelectContent>
+              {
+                counties.map((county) => (
+                  <SelectItem key={county} value={county}>{county}</SelectItem>
+                ))
+              }
+            </SelectContent>
+          </Select>
+          <Button
+            variant='outline'
+            type='reset'
+            className='bg-transparent w-max self-end font-medium border-[#023047]'
+            onClick={() => {
+              navigate({
+                to: Route.fullPath,
+                search: (previous) => ({
+                  ...previous,
+                  county: undefined
+                })
+              })
+            }}
+          >
+            Reset
+          </Button>
+        </div>
+      </div>
       <Button
         variant='outline'
         type='reset'
         className='bg-transparent w-max self-end font-medium border-[#023047] mt-6'
         onClick={handleReset}
       >
-        Reset Filters
+        Reset all Filters
       </Button>
 
     </div>

@@ -1,5 +1,4 @@
 import { Link, createFileRoute } from '@tanstack/react-router'
-import { LayoutGrid, List } from 'lucide-react';
 import { useGetTendersQuery } from '@/services/tender/tenderApiSlice';
 import { Fragment } from 'react';
 import { Tender } from '@/types/primitive.type';
@@ -18,8 +17,6 @@ const Screen = () => {
     county,
     tender_type,
     bidder,
-    // budget_min: budget_min?.toString(),
-    // budget_max: budget_max?.toString(),
   });
   const tenders = tendersData?.tenders || [];
   return (
@@ -37,10 +34,6 @@ const Screen = () => {
                   {tenders.length}
                   {' '}
                   results returned</span>
-                <div className="flex gap-4">
-                  <LayoutGrid size={24} className='cursor-pointer' />
-                  <List size={24} className='cursor-pointer' />
-                </div>
               </div>
               <div className="flex flex-col gap-6">
                 {

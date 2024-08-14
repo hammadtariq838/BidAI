@@ -7,13 +7,12 @@ import { Link } from '@tanstack/react-router';
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Phone, User, Cog, ArrowLeftSquareIcon } from "lucide-react";
+import { ArrowLeftSquareIcon } from "lucide-react";
 
 
 const Navbar = () => {
@@ -39,27 +38,6 @@ const Navbar = () => {
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-56" align='end'>
             <DropdownMenuLabel>{user?.account.name}</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem className="flex items-center gap-2">
-                <Cog className="h-5 w-5" />
-                <Link to="/">
-                  Settings
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem className="flex items-center gap-2">
-                <User className="h-5 w-5" />
-                <Link to="/">
-                  Profile
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem className="flex items-center gap-2">
-                <Phone className="h-5 w-5" />
-                <Link to="/">
-                  Contact us
-                </Link>
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem className="flex items-center gap-2">
               <ArrowLeftSquareIcon className="h-5 w-5" />
